@@ -6,11 +6,20 @@ import com.example.libraryManagement.service.BorrowingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class BorrowingController {
     @Autowired
     private BorrowingService borrowingService;
+
+
+
+    @GetMapping("/borrowingRecords")
+    public List<BorrowingRecord> getAllPatrons() {
+        return borrowingService.getAllBorrowingRecords();
+    }
 
     @PostMapping("/borrow/{bookId}/patron/{patronId}")
     public BorrowingRecord borrowBook(@PathVariable Long bookId, @PathVariable Long patronId) {
