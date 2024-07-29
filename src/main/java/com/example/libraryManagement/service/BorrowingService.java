@@ -7,10 +7,13 @@ import com.example.libraryManagement.repository.BookRepository;
 import com.example.libraryManagement.repository.BorrowingRecordRepository;
 import com.example.libraryManagement.repository.PatronRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class BorrowingService {
@@ -24,10 +27,11 @@ public class BorrowingService {
     private PatronRepository patronRepository;
 
     @Transactional
+    @CacheEvict(value = {"books", "booksList","borrowingRecords"}, allEntries = true)
     public BorrowingRecord borrowBook(Long bookId, Long patronId) {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
-        Integer bookCount=book.getCount();
-        if (bookCount - 1 <=0 ){
+        Integer bookCount = book.getCount();
+        if (bookCount - 1 <= 0) {
             throw new RuntimeException("noo Book available");
         }
         Patron patron = patronRepository.findById(patronId).orElseThrow(() -> new RuntimeException("Patron not found"));
@@ -38,9 +42,15 @@ public class BorrowingService {
         record.setBorrowDate(LocalDate.now());
         record.setReturnDate(LocalDate.now().plusDays(14));
 
-        book.setCount(bookCount-1);
+        book.setCount(bookCount - 1);
         bookRepository.save(book);
         return borrowingRecordRepository.save(record);
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "borrowingRecords")
+    public List<BorrowingRecord> getAllBorrowingRecord() {
+        return borrowingRecordRepository.findAll();
     }
 
 

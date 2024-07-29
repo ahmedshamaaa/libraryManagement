@@ -11,13 +11,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -63,14 +66,6 @@ public class BorrowingControllerTest {
         patron.setContactInfo("test@example.com");
         Patron savedPatron = patronRepository.save(patron);
 
-//        BorrowingRecord record = new BorrowingRecord();
-//        record.setBook(book);
-//        record.setPatron(patron);
-//        record.setBorrowDate(LocalDate.now());
-//        record.setReturnDate(LocalDate.now().plusDays(7)); // Set return date
-//        BorrowingRecord borrowingRecord = borrowingRecordRepository.save(record);
-
-
         // Perform the borrow request
         String url = baseUrl() + "/borrow/" + savedBook.getId() + "/patron/" + savedPatron.getId();
         ResponseEntity<BorrowingRecord> response = restTemplate.postForEntity(url, null, BorrowingRecord.class);
@@ -85,6 +80,20 @@ public class BorrowingControllerTest {
         assertEquals(savedPatron.getId(), savedRecord.getPatron().getId());
         assertEquals(LocalDate.now(), savedRecord.getBorrowDate());
         assertNotNull(savedRecord.getReturnDate()); // Ensure returnDate is set
+    }
+
+    @Test
+    void testGetAllBooks() {
+
+        String url = baseUrl() + "/borrowingRecord";
+
+        // Act
+        ResponseEntity<BorrowingRecord[]> response = restTemplate.getForEntity(url, BorrowingRecord[].class);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<BorrowingRecord> borrowingRecord = List.of(response.getBody());
+
     }
 
 
