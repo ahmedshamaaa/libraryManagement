@@ -40,6 +40,7 @@ public class BookControllerTest {
         return "http://localhost:" + port + "/api/books";
     }
 
+
     @Test
     void testGetAllBooks() {
         // Arrange
@@ -79,6 +80,21 @@ public class BookControllerTest {
         assertEquals("Test Book", retrievedBook.getTitle());
     }
 
+
+    @Test
+    void testGetBookById_NotFound() {
+        // Arrange: Use an ID that does not exist
+        Long nonExistentId = 999L;
+
+        try {
+            // Act
+            restTemplate.getForEntity(baseUrl() + "/" + nonExistentId, Book.class);
+            fail("Expected HttpClientErrorException to be thrown");
+        } catch (HttpClientErrorException e) {
+            // Assert: Check that the response status code is 404 Not Found
+            assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
+        }
+    }
     @Test
     void testAddBook() {
         // Arrange
@@ -190,6 +206,52 @@ public class BookControllerTest {
         }
 
     }
+    @Test
+    void testAddBook_InvalidData() {
+        // Arrange: Create a book with invalid data (e.g., missing title)
+        Book book = new Book();
+        book.setAuthor("Some Author");
+        book.setPublicationYear(2024);
+        book.setIsbn("1234567890123"); // Title is missing
+        HttpEntity<Book> request = new HttpEntity<>(book);
+
+        try {
+            // Act
+            restTemplate.postForEntity(baseUrl(), request, Book.class);
+            fail("Expected HttpClientErrorException to be thrown");
+        } catch (HttpClientErrorException e) {
+            // Assert: Check that the response status code is 400 Bad Request
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        }
+    }
+
+    @Test
+    void testUpdateBook_InvalidData() {
+        // Arrange: Create a valid book first
+        Book book = new Book();
+        book.setTitle("Valid Book");
+        book.setAuthor("Valid Author");
+        book.setPublicationYear(2024);
+        book.setIsbn("1234567890123");
+        book = bookRepository.save(book);
+
+        // Create an updated book with invalid data (e.g., missing title)
+        Book updatedBook = new Book();
+        updatedBook.setAuthor("Updated Author");
+        updatedBook.setPublicationYear(2025);
+        updatedBook.setIsbn("1234567890123"); // Title is missing
+        HttpEntity<Book> request = new HttpEntity<>(updatedBook);
+
+        try {
+            // Act
+            restTemplate.put(baseUrl() + "/" + book.getId(), request);
+            fail("Expected HttpClientErrorException to be thrown");
+        } catch (HttpClientErrorException e) {
+            // Assert: Check that the response status code is 400 Bad Request
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        }
+    }
+
 
 
 }

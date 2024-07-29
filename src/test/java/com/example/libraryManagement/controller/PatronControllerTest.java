@@ -38,6 +38,48 @@ public class PatronControllerTest {
         return "http://localhost:" + port + "/api/patrons";
     }
 
+
+    @Test
+    void testAddPatron_InvalidData() {
+        // Arrange: Create a patron with invalid data (e.g., missing name)
+        Patron patron = new Patron();
+        patron.setContactInfo("invalid@patron.com"); // Name is missing
+        HttpEntity<Patron> request = new HttpEntity<>(patron);
+
+        try {
+            // Act
+            restTemplate.postForEntity(baseUrl(), request, Patron.class);
+            fail("Expected HttpClientErrorException to be thrown");
+        } catch (HttpClientErrorException e) {
+            // Assert: Check that the response status code is 400 Bad Request
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        }
+    }
+
+    @Test
+    void testUpdatePatron_InvalidData() {
+        // Arrange: Create a valid patron first
+        Patron patron = new Patron();
+        patron.setName("Valid Patron");
+        patron.setContactInfo("valid@patron.com");
+        patron = patronRepository.save(patron);
+
+        // Create an updated patron with invalid data (e.g., missing contact info)
+        Patron updatedPatron = new Patron();
+        updatedPatron.setName("Updated Patron");
+        // updatedPatron.setContactInfo(null); // Contact info is missing
+        HttpEntity<Patron> request = new HttpEntity<>(updatedPatron);
+
+        try {
+            // Act
+            restTemplate.put(baseUrl() + "/" + patron.getId(), request);
+            fail("Expected HttpClientErrorException to be thrown");
+        } catch (HttpClientErrorException e) {
+            // Assert: Check that the response status code is 400 Bad Request
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        }
+    }
+
     @Test
     public void testGetAllPatrons() {
         // Save some patrons for testing
