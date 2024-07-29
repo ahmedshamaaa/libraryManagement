@@ -35,8 +35,8 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<Book> addBook(@RequestBody Book book) {
-        if (book.getTitle() == null || book.getAuthor() == null) {
-            throw new BadRequestException("Title and Author are required");
+        if (book.getTitle() == null || book.getAuthor() == null || book.getCount()  == null ){
+            throw new BadRequestException("Title ,Count and Author are required");
         }
         Book savedBook = bookService.addBook(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);

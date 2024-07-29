@@ -26,6 +26,10 @@ public class BorrowingService {
     @Transactional
     public BorrowingRecord borrowBook(Long bookId, Long patronId) {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
+        Integer bookCount=book.getCount();
+        if (bookCount - 1 <=0 ){
+            throw new RuntimeException("noo Book available");
+        }
         Patron patron = patronRepository.findById(patronId).orElseThrow(() -> new RuntimeException("Patron not found"));
 
         BorrowingRecord record = new BorrowingRecord();
@@ -33,6 +37,9 @@ public class BorrowingService {
         record.setPatron(patron);
         record.setBorrowDate(LocalDate.now());
         record.setReturnDate(LocalDate.now().plusDays(14));
+
+        book.setCount(bookCount-1);
+        bookRepository.save(book);
         return borrowingRecordRepository.save(record);
     }
 

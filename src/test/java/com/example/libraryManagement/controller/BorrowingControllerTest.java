@@ -52,8 +52,9 @@ public class BorrowingControllerTest {
         Book book = new Book();
         book.setTitle("Test Book");
         book.setAuthor("Author");
+        book.setCount(50);
         book.setIsbn("1234567890123");
-        book.setPublicationYear(2024);
+        book.setPublicationYear(2029);
         Book savedBook = bookRepository.save(book);
 
         // Create and save a patron

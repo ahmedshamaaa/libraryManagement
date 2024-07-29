@@ -2,7 +2,9 @@ package com.example.libraryManagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +29,12 @@ public class Book {
     @Size(max = 100, message = "Author should not exceed 100 characters")
     private String author;
 
-    private int publicationYear;
+    @NotNull(message = "publicationYear is mandatory")
+    private Integer  publicationYear;
+
+    @NotNull(message = "count is mandatory")
+    @Max(value = 1000, message = "Count must be at most 1000")
+    private Integer count;
 
     @NotBlank(message = "ISBN is mandatory")
     @Size(max = 13, message = "ISBN should not exceed 13 characters")

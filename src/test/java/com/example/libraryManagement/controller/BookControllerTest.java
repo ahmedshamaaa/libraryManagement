@@ -47,6 +47,7 @@ public class BookControllerTest {
         Book book = new Book();
         book.setTitle("Test Book");
         book.setAuthor("Test Author");
+        book.setCount(20);
         book.setPublicationYear(2024);
         book.setIsbn("1234567890123");
         bookRepository.save(book);
@@ -66,6 +67,7 @@ public class BookControllerTest {
         Book book = new Book();
         book.setTitle("Test Book");
         book.setAuthor("Test Author");
+        book.setCount(20);
         book.setPublicationYear(2024);
         book.setIsbn("1234567890123");
         book = bookRepository.save(book);
@@ -102,6 +104,7 @@ public class BookControllerTest {
         book.setTitle("New Book");
         book.setAuthor("New Author");
         book.setPublicationYear(2024);
+        book.setCount(20);
         book.setIsbn("9876543210987");
         HttpEntity<Book> request = new HttpEntity<>(book);
 
@@ -122,6 +125,7 @@ public class BookControllerTest {
         book.setTitle("Old Title");
         book.setAuthor("Old Author");
         book.setPublicationYear(2024);
+        book.setCount(30);
         book.setIsbn("1234567890123");
         book = bookRepository.save(book);
 
@@ -129,6 +133,7 @@ public class BookControllerTest {
         updatedBook.setTitle("Updated Title");
         updatedBook.setAuthor("Updated Author");
         updatedBook.setPublicationYear(2025);
+        updatedBook.setCount(40);
         updatedBook.setIsbn("1234567890123");
         HttpEntity<Book> request = new HttpEntity<>(updatedBook);
 
@@ -167,6 +172,7 @@ public class BookControllerTest {
         Book book = new Book();
         book.setTitle("shamaa Book");
         book.setAuthor("shamaa Author");
+        book.setCount(20);
         book.setPublicationYear(2024);
         book.setIsbn("1234567890123");
         Book savedBook = bookRepository.save(book);
@@ -188,6 +194,7 @@ public class BookControllerTest {
         book.setTitle("shamaa Book");
         book.setAuthor("shamaa Author");
         book.setPublicationYear(2024);
+        book.setCount(80);
         book.setIsbn("1234567890123");
         Book savedBook = bookRepository.save(book);
         Long id = savedBook.getId();
@@ -212,6 +219,7 @@ public class BookControllerTest {
         Book book = new Book();
         book.setAuthor("Some Author");
         book.setPublicationYear(2024);
+        book.setCount(70);
         book.setIsbn("1234567890123"); // Title is missing
         HttpEntity<Book> request = new HttpEntity<>(book);
 
@@ -232,6 +240,7 @@ public class BookControllerTest {
         book.setTitle("Valid Book");
         book.setAuthor("Valid Author");
         book.setPublicationYear(2024);
+        book.setCount(20);
         book.setIsbn("1234567890123");
         book = bookRepository.save(book);
 
@@ -239,6 +248,7 @@ public class BookControllerTest {
         Book updatedBook = new Book();
         updatedBook.setAuthor("Updated Author");
         updatedBook.setPublicationYear(2025);
+        book.setCount(20);
         updatedBook.setIsbn("1234567890123"); // Title is missing
         HttpEntity<Book> request = new HttpEntity<>(updatedBook);
 
