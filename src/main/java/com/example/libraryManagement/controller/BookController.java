@@ -1,17 +1,16 @@
-
 package com.example.libraryManagement.controller;
 
-        import com.example.libraryManagement.entity.Book;
-        import com.example.libraryManagement.exception.BadRequestException;
-        import com.example.libraryManagement.exception.ResourceNotFoundException;
-        import com.example.libraryManagement.service.BookService;
-        import jakarta.validation.Valid;
-        import org.springframework.beans.factory.annotation.Autowired;
-        import org.springframework.http.HttpStatus;
-        import org.springframework.http.ResponseEntity;
-        import org.springframework.web.bind.annotation.*;
+import com.example.libraryManagement.entity.Book;
+import com.example.libraryManagement.exception.BadRequestException;
+import com.example.libraryManagement.exception.ResourceNotFoundException;
+import com.example.libraryManagement.service.BookService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-        import java.util.List;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
@@ -42,6 +41,7 @@ public class BookController {
         Book savedBook = bookService.addBook(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable Long id, @Valid @RequestBody Book bookDetails) {
         Book updatedBook = bookService.updateBook(id, bookDetails);
@@ -59,15 +59,6 @@ public class BookController {
         bookService.deleteBook(id); // Proceed to delete if found
         return ResponseEntity.noContent().build(); // Return 204 NO_CONTENT if successfully deleted
     }
-
-
-
-
-
-
-
-
-
 
 
 }

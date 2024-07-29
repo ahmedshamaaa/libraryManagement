@@ -24,6 +24,7 @@ public class PatronService {
         return patronRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patron not found with id " + id));
     }
+
     @Transactional
     public Patron addPatron(Patron patron) {
         return patronRepository.save(patron);

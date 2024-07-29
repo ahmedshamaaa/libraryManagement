@@ -7,12 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -129,7 +130,7 @@ public class PatronControllerTest {
         patron.setContactInfo("test@example.com");
         Patron savedPatron = patronRepository.save(patron);
 
-        String url = baseUrl() + "/"+savedPatron.getId();
+        String url = baseUrl() + "/" + savedPatron.getId();
         restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
 
         try {
@@ -142,16 +143,17 @@ public class PatronControllerTest {
             assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode()); // Verify 404 status
         }
     }
+
     @Test
-    void testDeletePatron (){
+    void testDeletePatron() {
         // Arrange: Use an ID that does not exist
         Patron patron = new Patron();
         patron.setName("shamaa Patron");
         patron.setContactInfo("shamaa@example.com");
         Patron savedPatron = patronRepository.save(patron);
-        Long id=savedPatron.getId();
+        Long id = savedPatron.getId();
 
-        String url = baseUrl() + "/"+id;
+        String url = baseUrl() + "/" + id;
         // Act: Perform the DELETE request
         restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
         assertFalse(patronRepository.findById(id).isPresent());

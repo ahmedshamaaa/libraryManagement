@@ -1,7 +1,6 @@
 package com.example.libraryManagement.controller;
 
 
-import com.example.libraryManagement.entity.Book;
 import com.example.libraryManagement.entity.Patron;
 import com.example.libraryManagement.exception.ResourceNotFoundException;
 import com.example.libraryManagement.service.PatronService;
@@ -24,7 +23,6 @@ public class PatronController {
     public List<Patron> getAllPatrons() {
         return patronService.getAllPatrons();
     }
-
 
 
     @GetMapping("/{id}")
@@ -62,8 +60,6 @@ public class PatronController {
         patronService.deletePatron(id);
         return ResponseEntity.noContent().build(); // Return 204 NO_CONTENT if successfully deleted
     }
-
-
 
 
 }

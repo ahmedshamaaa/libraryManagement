@@ -1,13 +1,13 @@
 package com.example.libraryManagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.*;
+
 import java.util.List;
 
 @Entity
@@ -33,7 +33,7 @@ public class Book {
     @Size(max = 13, message = "ISBN should not exceed 13 characters")
     private String isbn;
 
-    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<BorrowingRecord> borrowingRecords;
 }

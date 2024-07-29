@@ -1,24 +1,23 @@
 package com.example.libraryManagement.controller;
 
 import com.example.libraryManagement.entity.Book;
-import com.example.libraryManagement.entity.Patron;
-import com.example.libraryManagement.exception.BadRequestException;
-import com.example.libraryManagement.exception.ResourceNotFoundException;
 import com.example.libraryManagement.repository.BookRepository;
-import com.example.libraryManagement.service.BookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -129,7 +128,6 @@ public class BookControllerTest {
     }
 
 
-
     @Test
     void testDeleteBook_NotFound() {
         // Arrange: Use an ID that does not exist
@@ -147,7 +145,7 @@ public class BookControllerTest {
     }
 
     @Test
-    void testDeleteBook (){
+    void testDeleteBook() {
         // Arrange: Use an ID that does not exist
 
         Book book = new Book();
@@ -158,7 +156,7 @@ public class BookControllerTest {
         Book savedBook = bookRepository.save(book);
         Long id = savedBook.getId();
 
-        String url = baseUrl() + "/"+id;
+        String url = baseUrl() + "/" + id;
 
         assertTrue(bookRepository.findById(id).isPresent());
         // Act: Perform the DELETE request
@@ -169,7 +167,7 @@ public class BookControllerTest {
     }
 
     @Test
-    void testDeleteBookNotFounded (){
+    void testDeleteBookNotFounded() {
         Book book = new Book();
         book.setTitle("shamaa Book");
         book.setAuthor("shamaa Author");
@@ -177,7 +175,7 @@ public class BookControllerTest {
         book.setIsbn("1234567890123");
         Book savedBook = bookRepository.save(book);
         Long id = savedBook.getId();
-        String url = baseUrl() + "/"+id;
+        String url = baseUrl() + "/" + id;
 
         restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
 
@@ -192,12 +190,6 @@ public class BookControllerTest {
         }
 
     }
-
-
-
-
-
-
 
 
 }

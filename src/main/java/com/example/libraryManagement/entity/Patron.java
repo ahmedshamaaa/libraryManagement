@@ -1,13 +1,12 @@
 package com.example.libraryManagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
@@ -26,7 +25,7 @@ public class Patron {
     private String contactInfo;
 
 
-    @OneToMany(mappedBy = "patron", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "patron", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<BorrowingRecord> borrowingRecords;
 }
