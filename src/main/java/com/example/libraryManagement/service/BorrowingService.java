@@ -7,12 +7,10 @@ import com.example.libraryManagement.repository.BorrowingRecordRepository;
 import com.example.libraryManagement.repository.BookRepository;
 import com.example.libraryManagement.repository.PatronRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class BorrowingService {
@@ -34,18 +32,10 @@ public class BorrowingService {
         record.setBook(book);
         record.setPatron(patron);
         record.setBorrowDate(LocalDate.now());
+        record.setReturnDate(LocalDate.now().plusDays(14));
         return borrowingRecordRepository.save(record);
     }
 
-    @Cacheable("borrowingRecords")
-    public List<BorrowingRecord> getAllBorrowingRecords() {
-        return borrowingRecordRepository.findAll();
-    }
-    @Transactional
-    public BorrowingRecord returnBook(Long bookId, Long patronId) {
-        BorrowingRecord record = borrowingRecordRepository.findByBookIdAndPatronId(bookId, patronId)
-                .orElseThrow(() -> new RuntimeException ("Borrowing record not found"));
-        record.setReturnDate(LocalDate.now());
-        return borrowingRecordRepository.save(record);
-    }
+
+
 }

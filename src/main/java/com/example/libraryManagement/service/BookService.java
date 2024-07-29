@@ -1,13 +1,16 @@
+
+
 package com.example.libraryManagement.service;
 
-import com.example.libraryManagement.entity.Book;
-import org.springframework.cache.annotation.Cacheable;
-import com.example.libraryManagement.repository.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+        import com.example.libraryManagement.entity.Book;
+        import com.example.libraryManagement.exception.ResourceNotFoundException;
+        import org.springframework.cache.annotation.Cacheable;
+        import com.example.libraryManagement.repository.BookRepository;
+        import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.stereotype.Service;
+        import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+        import java.util.List;
 
 @Service
 public class BookService {
@@ -19,9 +22,13 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    @Cacheable(value = "books", key = "#id")
     public Book getBookById(Long id) {
-        return bookRepository.findById(id).orElseThrow(() -> new RuntimeException ("Book not found"));
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id " + id));
+    }
+
+    public boolean existsById(Long id) {
+        return bookRepository.existsById(id);
     }
 
     @Transactional
@@ -41,7 +48,11 @@ public class BookService {
 
     @Transactional
     public void deleteBook(Long id) {
-        Book book = getBookById(id);
-        bookRepository.delete(book);
+        if (!existsById(id)) {
+            throw new ResourceNotFoundException("Book not found with id " + id);
+        }
+        bookRepository.deleteById(id);
     }
+
+
 }

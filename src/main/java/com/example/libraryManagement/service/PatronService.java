@@ -1,6 +1,7 @@
 package com.example.libraryManagement.service;
 
 import com.example.libraryManagement.entity.Patron;
+import com.example.libraryManagement.exception.ResourceNotFoundException;
 import com.example.libraryManagement.repository.PatronRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -15,14 +16,13 @@ public class PatronService {
     private PatronRepository patronRepository;
 
     @Cacheable("patrons")
-
     public List<Patron> getAllPatrons() {
         return patronRepository.findAll();
     }
-    @Cacheable(value = "patrons", key = "#id")
 
     public Patron getPatronById(Long id) {
-        return patronRepository.findById(id).orElseThrow(() -> new RuntimeException ("Patron not found"));
+        return patronRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patron not found with id " + id));
     }
     @Transactional
     public Patron addPatron(Patron patron) {
@@ -37,9 +37,16 @@ public class PatronService {
         return patronRepository.save(patron);
     }
 
+    public boolean existsById(Long id) {
+        return patronRepository.existsById(id);
+    }
+
     @Transactional
     public void deletePatron(Long id) {
-        Patron patron = getPatronById(id);
-        patronRepository.delete(patron);
+        if (!existsById(id)) {
+            throw new ResourceNotFoundException("Patron not found with id " + id);
+        }
+        patronRepository.deleteById(id);
     }
+
 }

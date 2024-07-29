@@ -1,5 +1,8 @@
 package com.example.libraryManagement.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +27,9 @@ public class BorrowingRecord {
     @JoinColumn(name = "patron_id")
     private Patron patron;
 
+    @NotNull(message = "Borrow date is mandatory")
     private LocalDate borrowDate;
+
+    @NotNull(message = "Return date is mandatory")
     private LocalDate returnDate;
 }
