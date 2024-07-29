@@ -124,7 +124,13 @@ public class PatronControllerTest {
     @Test
     void testDeletePatron_NotFound() {
         // Arrange: Use an ID that does not exist
-        String url = baseUrl() + "/99999";
+        Patron patron = new Patron();
+        patron.setName("Test Patron");
+        patron.setContactInfo("test@example.com");
+        Patron savedPatron = patronRepository.save(patron);
+
+        String url = baseUrl() + "/"+savedPatron.getId();
+        restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
 
         try {
             // Act: Perform the DELETE request
@@ -135,6 +141,22 @@ public class PatronControllerTest {
             // Assert: Check that the response status code is 404 Not Found
             assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode()); // Verify 404 status
         }
+    }
+    @Test
+    void testDeletePatron (){
+        // Arrange: Use an ID that does not exist
+        Patron patron = new Patron();
+        patron.setName("shamaa Patron");
+        patron.setContactInfo("shamaa@example.com");
+        Patron savedPatron = patronRepository.save(patron);
+        Long id=savedPatron.getId();
+
+        String url = baseUrl() + "/"+id;
+        // Act: Perform the DELETE request
+        restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
+        assertFalse(patronRepository.findById(id).isPresent());
+
+
     }
 
 }

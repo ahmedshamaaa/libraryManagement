@@ -1,6 +1,7 @@
 package com.example.libraryManagement.controller;
 
 import com.example.libraryManagement.entity.Book;
+import com.example.libraryManagement.entity.Patron;
 import com.example.libraryManagement.exception.BadRequestException;
 import com.example.libraryManagement.exception.ResourceNotFoundException;
 import com.example.libraryManagement.repository.BookRepository;
@@ -144,6 +145,56 @@ public class BookControllerTest {
             assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode()); // Verify 404 status
         }
     }
+
+    @Test
+    void testDeleteBook (){
+        // Arrange: Use an ID that does not exist
+
+        Book book = new Book();
+        book.setTitle("shamaa Book");
+        book.setAuthor("shamaa Author");
+        book.setPublicationYear(2024);
+        book.setIsbn("1234567890123");
+        Book savedBook = bookRepository.save(book);
+        Long id = savedBook.getId();
+
+        String url = baseUrl() + "/"+id;
+
+        assertTrue(bookRepository.findById(id).isPresent());
+        // Act: Perform the DELETE request
+        restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
+        assertFalse(bookRepository.findById(id).isPresent());
+
+
+    }
+
+    @Test
+    void testDeleteBookNotFounded (){
+        Book book = new Book();
+        book.setTitle("shamaa Book");
+        book.setAuthor("shamaa Author");
+        book.setPublicationYear(2024);
+        book.setIsbn("1234567890123");
+        Book savedBook = bookRepository.save(book);
+        Long id = savedBook.getId();
+        String url = baseUrl() + "/"+id;
+
+        restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
+
+        try {
+            // Act: Perform the DELETE request
+            restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
+            // If no exception is thrown, the test should fail
+            fail("Expected HttpClientErrorException to be thrown");
+        } catch (HttpClientErrorException e) {
+            // Assert: Check that the response status code is 404 Not Found
+            assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode()); // Verify 404 status
+        }
+
+    }
+
+
+
 
 
 
