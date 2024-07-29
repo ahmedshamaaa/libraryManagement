@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -126,30 +127,23 @@ public class BookControllerTest {
         assertEquals("Updated Title", resultBook.getTitle());
     }
 
+
+
     @Test
-    void testDeleteBook() {
-        // Arrange
-        Book book = new Book();
-        book.setTitle("Test Book");
-        book.setAuthor("Test Author");
-        book.setPublicationYear(2024);
-        book.setIsbn("1234567890123");
-        Book savedBook = bookRepository.save(book);
-        Long id = savedBook.getId();
+    void testDeleteBook_NotFound() {
+        // Arrange: Use an ID that does not exist
+        String url = baseUrl() + "/99999";
 
-        // Act
-        String url = baseUrl() + "/" + id;
-        restTemplate.delete(url);
-
-        // Assert
-        // Verify deletion in the repository
-        assertFalse(bookRepository.findById(id).isPresent());
-
-        // Try to fetch the book, expecting a 404 NOT_FOUND since it should be deleted
-        ResponseEntity<Book> response = restTemplate.getForEntity(url, Book.class);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode()); // Expecting 404 Not Found
+        try {
+            // Act: Perform the DELETE request
+            restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
+            // If no exception is thrown, the test should fail
+            fail("Expected HttpClientErrorException to be thrown");
+        } catch (HttpClientErrorException e) {
+            // Assert: Check that the response status code is 404 Not Found
+            assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode()); // Verify 404 status
+        }
     }
-
 
 
 

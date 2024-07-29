@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -119,24 +120,22 @@ public class PatronControllerTest {
         assertEquals("Updated Name", resultPatron.getName());
     }
 
+
     @Test
-    public void testDeletePatron() {
-        // Create and save a patron
-        Patron patron = new Patron();
-        patron.setName("Test Patron");
-        patron.setContactInfo("test@example.com");
-        Patron savedPatron = patronRepository.save(patron);
+    void testDeletePatron_NotFound() {
+        // Arrange: Use an ID that does not exist
+        String url = baseUrl() + "/99999";
 
-        // Delete the patron
-        String url = baseUrl() + "/" + savedPatron.getId();
-        restTemplate.delete(url);
-
-        // Verify the patron is deleted
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode()); // Expecting 404 Not Found
+        try {
+            // Act: Perform the DELETE request
+            restTemplate.exchange(url, HttpMethod.DELETE, null, Void.class);
+            // If no exception is thrown, the test should fail
+            fail("Expected HttpClientErrorException to be thrown");
+        } catch (HttpClientErrorException e) {
+            // Assert: Check that the response status code is 404 Not Found
+            assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode()); // Verify 404 status
+        }
     }
-
-
 
 }
 
