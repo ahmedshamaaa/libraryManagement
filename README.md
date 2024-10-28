@@ -69,14 +69,14 @@ details.
 
 ● Handle exceptions gracefully and return appropriate HTTP status codes and error messages. 
 
-# Security (Optional ): 
+# Security: 
 ● Implement basic authentication or JWT-based authorization to protect the API endpoints. 
 
-# Aspects (Optional): 
+# Aspects : 
 ● Implement logging using Aspect-Oriented Programming (AOP) to log method calls, exceptions, and 
 performance metrics of certain operations like book additions, updates, and patron transactions. 
 
-# Caching (Optional ): 
+# Caching : 
 ● Utilize Spring's caching mechanisms to cache frequently accessed data, such as book details or patron 
 information, to improve system performance. 
 
